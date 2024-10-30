@@ -1,0 +1,162 @@
+---
+import NotesLayout from '../layouts/NotesLayout.astro';
+import NotePreview from '../components/NotePreview.astro';
+---
+
+<NotesLayout title="Write Note">
+	<div class="editor-container">
+		<div class="editor-header">
+			<h1>> NEW_NOTE</h1>
+			<button id="saveNote" class="command-button">> SAVE</button>
+		</div>
+		<div class="split-view">
+			<textarea 
+				id="noteContent" 
+				class="note-editor" 
+				placeholder="Start writing your note here... (Markdown supported)"
+				autofocus
+			></textarea>
+			<div id="preview" class="preview note-content">
+				<div class="preview-header">> PREVIEW</div>
+				<div id="previewContent"></div>
+			</div>
+		</div>
+	</div>
+</NotesLayout>
+
+<script>
+	import { marked } from 'marked';
+
+	const editor = document.getElementById('noteContent') as HTMLTextAreaElement;
+	const saveButton = document.getElementById('saveNote');
+	const previewContent = document.getElementById('previewContent');
+
+	const updatePreview = () => {
+		if (previewContent && editor) {
+			const markdown = editor.value;
+			const html = marked(markdown);
+			previewContent.innerHTML = html;
+		}
+	};
+
+	editor?.addEventListener('input', updatePreview);
+
+	const saveNote = async () => {
+		const content = editor.value;
+		if (!content.trim()) {
+			alert('Please write some content before saving.');
+			return;
+		}
+
+		try {
+			const response = await fetch('/api/notes', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					content,
+					date: new Date().toISOString(),
+				}),
+			});
+
+			const data = await response.json();
+
+			if (response.ok && data.success) {
+				window.location.href = '/notes';
+			} else {
+				throw new Error(data.message || 'Failed to save note');
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			alert('Failed to save note. Please try again.');
+		}
+	};
+
+	saveButton?.addEventListener('click', saveNote);
+	
+	// Auto-save on Ctrl+S
+	document.addEventListener('keydown', (e) => {
+		if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+			e.preventDefault();
+			saveNote();
+		}
+	});
+
+	// Initial preview
+	updatePreview();
+</script>
+
+<style>
+	.editor-container {
+		display: flex;
+		flex-direction: column;
+		height: calc(100vh - 200px);
+		gap: 1rem;
+	}
+
+	.editor-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.split-view {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.note-editor {
+		font-family: var(--font-mono);
+		background: var(--bg-color);
+		border: 1px solid var(--border-color);
+		color: var(--text-color);
+		padding: 1rem;
+		border-radius: 4px;
+		resize: none;
+		font-size: 1.1rem;
+		line-height: 1.6;
+		height: 100%;
+	}
+
+	.note-editor:focus {
+		outline: none;
+		border-color: var(--accent-color);
+	}
+
+	.preview {
+		background: var(--bg-color);
+		border: 1px solid var(--border-color);
+		border-radius: 4px;
+		padding: 1rem;
+		overflow-y: auto;
+		height: 100%;
+	}
+
+	.preview-header {
+		color: var(--accent-color);
+		margin-bottom: 1rem;
+		font-weight: 600;
+		border-bottom: 1px solid var(--border-color);
+		padding-bottom: 0.5rem;
+	}
+
+	.command-button {
+		font-family: var(--font-mono);
+		background: var(--bg-color);
+		color: var(--accent-color);
+		border: 1px solid var(--border-color);
+		padding: 0.5rem 1rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		font-size: 1rem;
+	}
+
+	.command-button:hover {
+		background: var(--accent-color);
+		color: var(--bg-color);
+	}
+</style>

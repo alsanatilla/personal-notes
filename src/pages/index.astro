@@ -1,0 +1,47 @@
+---
+import NotesLayout from '../layouts/NotesLayout.astro';
+---
+
+<NotesLayout title="Retro Notes">
+	<h1>> RETRO_NOTES</h1>
+	<div class="welcome-text">
+		<p>Welcome to your retro-styled markdown notes system.</p>
+		<p class="blink">Ready for input...</p>
+	</div>
+	<div class="quick-start">
+		<a href="/new" class="command-link">> START_WRITING</a>
+	</div>
+</NotesLayout>
+
+<style>
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.welcome-text {
+		margin-bottom: 2rem;
+	}
+
+	.blink {
+		animation: blink 1s step-end infinite;
+		margin-top: 1rem;
+	}
+
+	@keyframes blink {
+		50% {
+			opacity: 0;
+		}
+	}
+
+	.command-link {
+		display: inline-block;
+		margin-top: 1rem;
+		font-size: 1.2rem;
+		color: var(--link-color);
+	}
+
+	.command-link:hover {
+		color: var(--accent-color);
+	}
+</style>

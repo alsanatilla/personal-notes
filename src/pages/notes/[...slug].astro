@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import NotesLayout from '../../layouts/NotesLayout.astro';
+
+export async function getStaticPaths() {
+	const notes = await getCollection('notes');
+	return notes.map(note => ({
+		params: { slug: note.slug },
+		props: { note },
+	}));
+}
+
+const { note } = Astro.props;
+const { Content } = await note.render();
+---
+
+<NotesLayout title={note.data.title}>
+	<div class="note-header">
+		<h1>> {note.data.title}</h1>
+		<p class="timestamp">{note.data.date.toLocaleDateString()}</p>
+	</div>
+	<div class="note-content">
+		<Content />
+	</div>
+</NotesLayout>
+
+<style>
+	.note-header {
+		margin-bottom: 2rem;
+	}
+
+	.note-content {
+		line-height: 1.8;
+	}
+
+	.note-content :global(h2) {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.note-content :global(p) {
+		margin-bottom: 1rem;
+	}
+
+	.note-content :global(ul),
+	.note-content :global(ol) {
+		margin-left: 2rem;
+		margin-bottom: 1rem;
+	}
+</style>

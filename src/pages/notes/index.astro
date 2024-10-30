@@ -1,0 +1,38 @@
+---
+import NotesLayout from '../../layouts/NotesLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('notes');
+notes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<NotesLayout title="All Notes">
+	<h1>> NOTES_LIST</h1>
+	<div class="notes-grid">
+		{notes.map(note => (
+			<div class="note-card">
+				<h2>
+					<a href={`/notes/${note.slug}`}>> {note.data.title}</a>
+				</h2>
+				<p class="timestamp">{note.data.date.toLocaleDateString()}</p>
+				<p>{note.data.description}</p>
+			</div>
+		))}
+	</div>
+</NotesLayout>
+
+<style>
+	.notes-grid {
+		display: grid;
+		gap: 1.5rem;
+	}
+
+	.note-card h2 {
+		font-size: 1.2rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.note-card p {
+		margin-top: 0.5rem;
+	}
+</style>

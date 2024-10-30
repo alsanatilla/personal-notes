@@ -1,0 +1,157 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Retro Notes App" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<nav>
+			<a href="/" class="home-link">HOME</a>
+			<a href="/notes" class="notes-link">NOTES</a>
+			<a href="/new" class="new-link">WRITE</a>
+		</nav>
+		<main>
+			<slot />
+		</main>
+	</body>
+</html>
+<style is:global>
+	:root {
+		--bg-color: #1a1b26;
+		--text-color: #a9b1d6;
+		--link-color: #7aa2f7;
+		--accent-color: #bb9af7;
+		--border-color: #414868;
+		--code-bg: #24283b;
+		--font-mono: 'IBM Plex Mono', monospace;
+	}
+	
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	html {
+		background: var(--bg-color);
+		color: var(--text-color);
+		line-height: 1.6;
+	}
+
+	body {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem;
+		font-family: var(--font-mono);
+	}
+
+	nav {
+		margin-bottom: 2rem;
+		padding: 1rem;
+		border: 1px solid var(--border-color);
+		border-radius: 4px;
+		background: var(--code-bg);
+	}
+
+	nav a {
+		color: var(--link-color);
+		text-decoration: none;
+		margin-right: 2rem;
+		font-weight: 600;
+		transition: color 0.2s ease;
+	}
+
+	nav a:hover {
+		color: var(--accent-color);
+	}
+
+	main {
+		padding: 2rem;
+		border: 1px solid var(--border-color);
+		border-radius: 4px;
+		background: var(--code-bg);
+	}
+
+	h1, h2, h3 {
+		color: var(--accent-color);
+		margin-bottom: 1rem;
+		font-weight: 600;
+	}
+
+	h1 {
+		letter-spacing: -0.5px;
+	}
+
+	a {
+		color: var(--link-color);
+		text-decoration: none;
+		transition: color 0.2s ease;
+	}
+
+	a:hover {
+		color: var(--accent-color);
+	}
+
+	.note-card {
+		border: 1px solid var(--border-color);
+		padding: 1rem;
+		margin-bottom: 1rem;
+		transition: all 0.3s ease;
+		border-radius: 4px;
+		background: var(--bg-color);
+	}
+
+	.note-card:hover {
+		border-color: var(--accent-color);
+		transform: translateX(10px);
+	}
+
+	pre {
+		background: var(--bg-color);
+		padding: 1rem;
+		overflow-x: auto;
+		border: 1px solid var(--border-color);
+		border-radius: 4px;
+	}
+
+	code {
+		font-family: var(--font-mono);
+	}
+
+	.timestamp {
+		color: var(--accent-color);
+		font-size: 0.8rem;
+		opacity: 0.8;
+	}
+
+	.note-content {
+		font-size: 1.1rem;
+		line-height: 1.8;
+	}
+
+	.note-content code {
+		background: var(--bg-color);
+		padding: 0.2em 0.4em;
+		border-radius: 3px;
+		font-size: 0.9em;
+	}
+
+	.note-content pre code {
+		padding: 0;
+	}
+</style>
